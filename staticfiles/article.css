@@ -1,0 +1,116 @@
+/* Article (post detail) page refinements on top of the base theme */
+
+.post-featured-img {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 0 0 18px;
+}
+.post-featured-img img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Author / meta row */
+.all-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin: 10px 0 18px;
+}
+.post-inner-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.post-inner-user .author-image img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.post-inner-username .post-author {
+  font-weight: 700;
+  color: var(--featured-posts-title, #000);
+}
+.post-times {
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--snippet-color, #999);
+  margin-top: 2px;
+}
+
+/* Newer / older nav */
+.xliil {
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+}
+.xliil .navigation-posts span {
+  display: block;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: var(--snippet-color, #999);
+  letter-spacing: .5px;
+}
+.xliil .navigation-posts p {
+  margin: 2px 0 0;
+  font-weight: 600;
+  color: var(--featured-posts-title, #000);
+}
+
+/* Related posts grid */
+.related-runs .ijfbiIf {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.related-runs .ijfbiIf .ijfbiIf-thumb {
+  width: 100%;
+  height: 150px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+.related-runs .ijfbiIf .ijfbiIf-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.related-runs .entry-title a {
+  font-size: 15px;
+  display: block;
+  margin-top: 6px;
+  color: var(--featured-posts-title, #000);
+}
+
+@media (max-width: 640px) {
+  .related-runs .ijfbiIf { grid-template-columns: 1fr 1fr; }
+}
+
+/* Sticky share box copy link */
+.copy-section { margin-top: 12px; }
+.copy-section #showlink {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--solid-border, #ddd);
+  border-radius: 6px;
+  font-size: 13px;
+}
+.copy-section button {
+  margin-top: 8px;
+  background: var(--button-bg-color, #4285F4);
+  color: #fff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.messageDone { color: #2e9e3f; font-size: 13px; margin-top: 6px; }
