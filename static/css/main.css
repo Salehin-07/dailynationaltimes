@@ -312,6 +312,10 @@ body.dnt-navopen .dnt-navtoggle span:nth-child(3) {transform: translateY(-7px) r
   .dnt-popular__item {grid-template-columns: 76px 1fr; gap: 10px;}
 }
 
+@media (max-width: 880px) {
+  .dnt-popular {display: grid; grid-template-columns: 1fr 1fr; gap: 14px;}
+}
+
 /* ---------- Mobile search icon + popup (mobile only) ---------- */
 .dnt-searchicon {display: none; align-items: center; justify-content: center; width: 44px; height: 44px; border: 0; background: transparent; color: var(--dnt-ink); font-size: 19px; cursor: pointer; flex-shrink: 0;}
 .dnt-searchicon:hover {color: var(--dnt-red);}
@@ -345,10 +349,16 @@ body.dnt-navopen .dnt-navtoggle span:nth-child(3) {transform: translateY(-7px) r
    The base theme inverts this (1 col on wide screens, 2 cols only <=940px),
    which left the laptop/desktop feed as a single oversized column. Fix:
    2 columns on laptop/tablet, 1 column on phones. */
-.post-filter-wrap .grid-posts {grid-template-columns: repeat(2, 1fr); gap: 18px;}
+.post-filter-wrap .grid-posts {display: grid; grid-template-columns: repeat(6, 1fr); gap: 18px;}
+.post-filter-wrap .grid-posts > * {grid-column: span 2;}
+.post-filter-wrap .grid-posts > *:nth-child(1),
+.post-filter-wrap .grid-posts > *:nth-child(2) {grid-column: span 3;}
 
 @media (max-width: 600px) {
   .post-filter-wrap .grid-posts {grid-template-columns: 1fr;}
+  .post-filter-wrap .grid-posts > *,
+  .post-filter-wrap .grid-posts > *:nth-child(1),
+  .post-filter-wrap .grid-posts > *:nth-child(2) {grid-column: auto;}
 }
 
 /* ---------- News cards (MORE NEWS): image on top, text below ---------- */

@@ -8,7 +8,7 @@ def site_context(request):
     settings = SiteSettings.get_settings()
     categories = list(Category.objects.all())
     popular = list(
-        Post.objects.filter(status="published").order_by("-views")[:5]
+        Post.objects.filter(status="published").order_by("-views")[:10]
     )
     ads = list(Ad.objects.filter(active=True))
     ads_by_slot = {}

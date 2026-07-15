@@ -10,9 +10,10 @@ from editorials.models import Post, STATUS_PUBLISHED
 
 def home(request):
     published = Post.objects.filter(status=STATUS_PUBLISHED)
-    featured = list(published.filter(is_featured=True)[:4])
-    if not featured:
-        featured = list(published[:4])
+    featured = list(published.filter(is_featured=True))
+    if len(featured) < 4:
+        fill = published.exclude(id__in=[p.id for p in featured])
+        featured = (featured + list(fill))[:4]
     paginator = Paginator(published, 9)
     page = paginator.get_page(request.GET.get("page"))
     return render(
