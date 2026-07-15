@@ -15,16 +15,45 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
-SECRET_KEY = os.getenv(
-    "DJANGO_SECRET_KEY",
-    "django-insecure-^1l525!9it2-rws#aihwi9(4e9g&5!i7k3s4eoakrplumq#ihd",
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+if not SECRET_KEY:
+    if DEBUG:
+        SECRET_KEY = "django-insecure-dev-only"
+    else:
+        raise RuntimeError("DJANGO_SECRET_KEY must be set in production.")
+
+DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() in ("1", "true", "yes")
+
+# Hosts: always allow render.com deployments. Extend via DJANGO_ALLOWED_HOSTS.
+ALLOWED_HOSTS = list(
+    dict.fromkeys(
+        ["127.0.0.1", "localhost", ".onrender.com", "testserver"]
+        + [
+            h.strip()
+            for h in os.getenv("DJANGO_ALLOWED_HOSTS", "").split(",")
+            if h.strip()
+        ]
+    )
 )
 
-DEBUG = os.getenv("DJANGO_DEBUG", "True").lower() in ("1", "true", "yes")
+# CSRF: trust render.com origins in production.
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.getenv("DJANGO_CSRF_TRUSTED_ORIGINS", "https://*.onrender.com").split(",")
+    if o.strip()
+]
 
-ALLOWED_HOSTS = os.getenv(
-    "DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,.dnt.mvp.bd,testserver"
-).split(",")
+# Production hardening (applied when DEBUG is False).
+if not DEBUG:
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_HSTS_SECONDS = 60 * 60 * 24 * 30
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_BROWSER_XSS_FILTER = True
 
 
 # Application definition
@@ -78,13 +107,27 @@ TEMPLATES = [
 WSGI_APPLICATION = "dnt.wsgi.application"
 
 
-# Database
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+# Database: use DATABASE_URL when provided, otherwise fall back to SQLite.
+import dj_database_url
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+if DATABASE_URL:
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+
+
+# GitHub-backed media storage (replaces S3)
+GITHUB_REPO = os.getenv("GITHUB_REPO", "")        # "owner/repo"
+GITHUB_BRANCH = os.getenv("GITHUB_BRANCH", "main")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
+GITHUB_MEDIA_PATH = os.getenv("GITHUB_MEDIA_PATH", "media/posts")
+GITHUB_MAX_UPLOAD_BYTES = int(os.getenv("GITHUB_MAX_UPLOAD_BYTES", "5242880"))  # 5 MB
 
 
 # Password validation

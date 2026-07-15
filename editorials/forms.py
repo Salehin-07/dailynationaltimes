@@ -8,6 +8,13 @@ class PostForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxSelectMultiple,
     )
+    # Uploaded image is pushed to the GitHub media repo; its raw URL is
+    # stored in `featured_image`. Pasted URLs still work via `featured_image`.
+    image = forms.FileField(
+        required=False,
+        label="Featured image (upload)",
+        help_text="Uploaded to the GitHub media repo and served via raw.githubusercontent.com.",
+    )
     status = forms.ChoiceField(
         choices=Post._meta.get_field("status").choices,
         widget=forms.Select,

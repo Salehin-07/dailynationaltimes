@@ -13,8 +13,11 @@ ROLE_EDITOR = "Editor"
 EDITORIAL_ROLES = [ROLE_REPORTER, ROLE_SUB_EDITOR, ROLE_EDITOR]
 
 
-def ensure_roles():
-    """Create the editorial role groups if they do not exist yet."""
+def ensure_roles(sender=None, **kwargs):
+    """Create the editorial role groups if they do not exist yet.
+
+    Accepts signal arguments so it can be used as a post_migrate receiver.
+    """
     from django.db.utils import OperationalError
 
     try:

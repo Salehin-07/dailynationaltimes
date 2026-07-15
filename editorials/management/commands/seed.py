@@ -237,7 +237,7 @@ class Command(BaseCommand):
             if made:
                 user.set_password("editor12345")
                 user.save()
-            group = Group.objects.get(name=role)
+            group, _ = Group.objects.get_or_create(name=role)
             user.groups.add(group)
         admin, made = User.objects.get_or_create(username="admin", defaults={"email": "admin@dnt.bd", "is_staff": True, "is_superuser": True})
         if made:

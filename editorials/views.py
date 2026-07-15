@@ -128,13 +128,26 @@ def dashboard(request):
 def post_create(request):
     roles = user_roles(request.user)
     if request.method == "POST":
-        form = PostForm(request.POST)
+        form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             # Reporters may only save drafts; others may submit for review.
             if ROLE_EDITOR not in roles and ROLE_SUB_EDITOR not in roles:
                 post.status = STATUS_DRAFT
+            image = form.cleaned_data.get("image")
+            if image:
+                from editorials.github_storage import upload_image, GitHubStorageError
+
+                try:
+                    post.featured_image = upload_image(image)
+                except GitHubStorageError as exc:
+                    form.add_error("image", str(exc))
+                    return render(
+                        request,
+                        "editorials/post_form.html",
+                        {"form": form, "title": "New Post"},
+                    )
             post.save()
             form.save_m2m()
             messages.success(request, "Post saved.")
@@ -155,8 +168,21 @@ def post_edit(request, slug):
 
             raise PermissionDenied
     if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
+        form = PostForm(request.POST, request.FILES, instance=post)
         if form.is_valid():
+            image = form.cleaned_data.get("image")
+            if image:
+                from editorials.github_storage import upload_image, GitHubStorageError
+
+                try:
+                    post.featured_image = upload_image(image)
+                except GitHubStorageError as exc:
+                    form.add_error("image", str(exc))
+                    return render(
+                        request,
+                        "editorials/post_form.html",
+                        {"form": form, "post": post, "title": "Edit Post"},
+                    )
             form.save()
             messages.success(request, "Post updated.")
             return redirect("editorials:dashboard")
