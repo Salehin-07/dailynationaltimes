@@ -9,8 +9,7 @@ class EditorialsConfig(AppConfig):
     def ready(self):
         from editorials.permissions import ensure_roles
 
-        # Guarantee groups exist at app startup (e.g. production gunicorn).
-        ensure_roles()
-        # And after every migrate, so a fresh DB is seeded correctly even
-        # though ready() runs before the auth tables exist during migrate.
+        # Seed the editorial role groups after every migrate. During the
+        # migrate command django.setup() runs before the auth tables exist,
+        # so we must not query the DB here.
         post_migrate.connect(ensure_roles, sender=self)
