@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Search{% if query %}: {{ query }}{% endif %} - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='queryMessage'>
+  {% if query %}
+  Search results for "<span class='search-query'>{{ query }}</span>" ({{ count }})
+  {% else %}
+  Type something in the search box to find news.
+  {% endif %}
+</div>
+{% include 'partials/posts_grid.html' with title='SEARCH RESULTS' page_obj=page_obj empty_text='No results found. Try a different keyword.' %}
+{% endblock %}

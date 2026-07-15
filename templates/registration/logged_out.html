@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %}Logged out - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='dnt-form' style='text-align:center;'>
+  <h2 style='margin-bottom:15px;'>You have been logged out</h2>
+  <p><a href='{% url "login" %}'>Log in again</a></p>
+</div>
+{% endblock %}

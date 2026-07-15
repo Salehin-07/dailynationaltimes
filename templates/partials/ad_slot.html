@@ -1,0 +1,11 @@
+{% for ad in ads %}
+  {% if ad.html %}
+    <div class='ad-slot ad-slot--html'>{{ ad.html|safe }}</div>
+  {% elif ad.image_url %}
+    <div class='ad-slot ad-slot--image'>
+      <a href='{{ ad.link }}' target='_blank' rel='nofollow'>
+        <img alt='{{ ad.name }}' src='{{ ad.image_url }}'/>
+      </a>
+    </div>
+  {% endif %}
+{% endfor %}

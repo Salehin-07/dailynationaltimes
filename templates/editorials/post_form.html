@@ -1,0 +1,22 @@
+{% load static %}
+{% include 'partials/dash_head.html' with active='newpost' title=title %}
+  {% if messages %}
+    {% for m in messages %}<div class="dash-msg"><i class="bi bi-check-circle me-1"></i> {{ m }}</div>{% endfor %}
+  {% endif %}
+
+  <section class="dash-card">
+    <div class="dash-card-head">
+      <h2 class="dash-card-title">{% if post %}Edit Post{% else %}New Post{% endif %}</h2>
+    </div>
+    <div style="padding:20px;">
+      <form class="dash-form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_div }}
+        <div class="dash-form-actions">
+          <button type="submit" class="dash-btn"><i class="bi bi-check-lg"></i> {% if post %}Update Post{% else %}Save Post{% endif %}</button>
+          <a href="{% url 'editorials:dashboard' %}" class="dash-btn-ghost"><i class="bi bi-x-lg"></i> Cancel</a>
+        </div>
+      </form>
+    </div>
+  </section>
+{% include 'partials/dash_foot.html' %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Contact - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='dnt-form'>
+  <h2 style='margin-bottom:15px;'>Contact Us</h2>
+  {% if messages %}
+    {% for message in messages %}<p class='queryMessage' style='color:var(--lables-buttons-color);'>{{ message }}</p>{% endfor %}
+  {% endif %}
+  <form method='post'>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class='form-group'>
+      {{ field.label_tag }}
+      {{ field }}
+      {% if field.help_text %}<span class='helptext'>{{ field.help_text }}</span>{% endif %}
+      {{ field.errors }}
+    </div>
+    {% endfor %}
+    <button type='submit' class='btn-submit'>Send</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+<div class='post-filter-wrap'>
+  <div class='widget-title'>
+    <h3 class='title'><span>{{ title }}</span></h3>
+    {% if show_more_url %}<a class='more-c' href='{{ show_more_url }}'>Show more</a>{% endif %}
+  </div>
+  <div class='grid-posts'>
+    {% for post in page_obj %}
+      {% include 'partials/post_card.html' %}
+    {% empty %}
+      <p class='queryEmpty'>{% if empty_text %}{{ empty_text }}{% else %}No posts found.{% endif %}</p>
+    {% endfor %}
+  </div>
+  {% include 'partials/pagination.html' %}
+</div>

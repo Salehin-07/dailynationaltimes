@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ post.title }} - {{ site_settings.name }}{% endblock %}
+{% block og_title %}{{ post.title }}{% endblock %}
+{% block og_description %}{{ post.excerpt|default:"" }}{% endblock %}
+{% block og_image %}{% if post.featured_image %}<meta property='og:image' content='{{ post.featured_image }}'/>{% endif %}{% endblock %}
+
+{% block content %}
+<div class='post-filter-wrap'>
+  <article class='hentry item-post'>
+    <div class='post-inner-area'>
+      <nav id='breadcrumb'>
+        <a href='{% url "core:home" %}'>Home</a>
+        <em class='delimiter'></em>
+        {% if post.category %}<a class='b-label' href='{{ post.category.get_absolute_url }}'>{{ post.category.name|upper }}</a><em class='delimiter'></em>{% endif %}
+        <span class='current'>{{ post.title }}</span>
+      </nav>
+
+      <h1 class='entry-title'>{{ post.title }}</h1>
+
+      <div class='all-flex'>
+        <div class='post-inner-data flex'>
+          <div class='post-inner-user'>
+            <span class='author-image'><img alt='{{ post.author_name }}' class='snip-thumbnail' src='{{ site_settings.logo }}'/></span>
+          </div>
+          <div class='post-inner-username'>
+            <span>By -<span class='post-author'>{{ post.author_name }}</span></span>
+            <div class='post-times'>
+              <span class='post-date published'><i class='bi bi-calendar2-minus'></i>{{ post.published_at|date:"F j, Y" }}</span>
+              <span id='readTime'>{{ read_time }} min read</span>
+            </div>
+          </div>
+        </div>
+        <div class='post-inner-comments flex'>
+          <div class='share-top'><i class='bi bi-share-fill'></i></div>
+        </div>
+      </div>
+
+      {% if post.featured_image %}
+      <div class='post-featured-img'><img src='{{ post.featured_image }}' alt='{{ post.title }}'/></div>
+      {% endif %}
+
+      <div class='post-body entry-content' id='postBody'>{{ post.content|safe }}</div>
+
+      <div class='zlixiilo'></div>
+
+      {% if post.tags.all %}
+      <div class='label-container'>
+        <span>Tags:</span>
+        <div class='label-head Label'>
+          {% for tag in post.tags.all %}<a class='label-link' href='{{ tag.get_absolute_url }}' rel='nofollow noopener noreferrer'>{{ tag.name }}</a>{% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      <ul class='xliil'>
+        <li class='post-next'>
+          <div class='navigation-posts post-primary'><span>Newer</span><p>{{ post.title }}</p></div>
+        </li>
+      </ul>
+
+      <div class='post-footer'>
+        {% if related %}
+        <div class='related-runs'>
+          <div class='widget-title widget-title--dnt'><h3 class='title'>You Might Like</h3></div>
+          <div class='ijfbiIf dnt-related'>
+            {% for rel in related %}
+            <article class='ijfbiIf-post dnt-related__card'>
+              <a class='ijfbiIf-thumb dnt-related__media' href='{{ rel.get_absolute_url }}' aria-label='{{ rel.title }}'>
+                <img src='{{ rel.featured_image }}' alt='{{ rel.title }}'/>
+              </a>
+              <div class='dnt-related__body'>
+                {% if rel.category %}<span class='dnt-related__tag'>{{ rel.category.name|upper }}</span>{% endif %}
+                <h2 class='entry-title dnt-related__title'><a href='{{ rel.get_absolute_url }}'>{{ rel.title }}</a></h2>
+              </div>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% include 'partials/ad_slot.html' with ads=ads_by_slot.article_bottom %}
+
+  <div class='StickyBox'>
+    <div class='StickyDemo'>
+      <div class='StickyTab'><div class='StickyType'>Share to other apps</div><label class='close-check'><i class='bi bi-x-lg'></i></label></div>
+      <ul class='zZiilz colorful zeicilo'>
+        {% with post_url=request.scheme|add:"://"|add:request.get_host|add:post.get_absolute_url %}
+        <li class='facebook'><a aria-label='Facebook' class='bi-facebook window-t' data-height='650' data-url='https://www.facebook.com/sharer.php?u={{ post_url }}' data-width='550' href='javascript:;' rel='nofollow' title='Facebook'>Facebook</a></li>
+        <li class='twitter-x'><a aria-label='Twitter' class='bi-twitter-x window-t' data-height='460' data-url='https://x.com/intent/post?url={{ post_url }}' data-width='550' href='javascript:;' rel='nofollow' title='Twitter'>Twitter</a></li>
+        <li class='whatsapp'><a aria-label='Whatsapp' class='bi-whatsapp window-t' data-height='650' data-url='https://api.whatsapp.com/send?text={{ post.title }} | {{ post_url }}' data-width='550' href='javascript:;' rel='nofollow' title='Whatsapp'>Whatsapp</a></li>
+        <li class='telegram'><a aria-label='Telegram' class='bi-telegram window-t' data-height='460' data-url='https://telegram.me/share/url?url={{ post_url }}&text={{ post.title }}' data-width='550' href='javascript:;' rel='nofollow' title='Telegram'>Telegram</a></li>
+        {% endwith %}
+      </ul>
+      <div class='copy-section'>
+        <span class='title'>Copy Post Link</span>
+        <div class='zliciilo'>
+          <input id='showlink' readonly='readonly' value='{{ request.scheme }}://{{ request.get_host }}{{ post.get_absolute_url }}'/>
+          <button aria-label='Copy'>Copy</button>
+          <div class='messageDone' id='messageDone'></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'article.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,34 @@
+{% load static %}
+{% include 'partials/ad_slot.html' with ads=ads_by_slot.sidebar %}
+
+<div class='widget PopularPosts'>
+  <div class='widget-title widget-title--dnt'><h3 class='title'>Most Viewed</h3></div>
+  <div class='widget-content sidebar-posts dnt-popular'>
+    {% for post in popular_posts %}
+    <article class='dnt-popular__item{% if forloop.first %} dnt-popular__item--lead{% endif %}'>
+      <a class='dnt-popular__media' href='{{ post.get_absolute_url }}' title='{{ post.title }}' aria-label='{{ post.title }}'>
+        <span class='dnt-popular__rank'>{{ forloop.counter }}</span>
+        <img alt='{{ post.title }}' class='dnt-popular__img' src='{{ post.featured_image }}'/>
+      </a>
+      <div class='dnt-popular__body'>
+        {% if post.category %}<span class='dnt-popular__tag'>{{ post.category.name|upper }}</span>{% endif %}
+        <h2 class='dnt-popular__title entry-title'><a href='{{ post.get_absolute_url }}'>{{ post.title }}</a></h2>
+        <div class='dnt-popular__meta'>
+          <span class='post-author'>{{ post.author_name }}</span>
+          <span class='post-date'><i class='bi bi-calendar2-minus'></i>{{ post.published_at|date:"F j, Y" }}</span>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+</div>
+
+<div class='widget LinkList'>
+  <div class='widget-content'>
+    <ul class='socialFilter colorful social'>
+      {% for key, url, icon in site_settings.social_links %}
+      <li class='{{ key }}'><a aria-label='{{ key }}' class='bi {{ icon }}' href='{{ url }}' rel='nofollow noopener noreferrer' target='_blank' title='{{ key }}'>{{ key }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>

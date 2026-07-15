@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Delete Post - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='dnt-form' style='text-align:center;'>
+  <h2 style='margin-bottom:15px;'>Delete "{{ post.title }}"?</h2>
+  <form method='post'>{% csrf_token %}
+    <button type='submit' class='btn-submit' style='background:#b54646;'>Yes, delete</button>
+    <a href='{% url "editorials:dashboard" %}' class='btn-submit' style='background:#888;'>Cancel</a>
+  </form>
+</div>
+{% endblock %}

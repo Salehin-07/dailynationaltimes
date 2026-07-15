@@ -1,0 +1,95 @@
+{% load static %}
+{% include 'partials/dash_head.html' with active='dashboard' title=title %}
+  <div class="dash-greet">
+    <div>
+      <h1>{% if view_all %}All Posts{% else %}Welcome, {{ user.first_name|default:user.username }}{% endif %}</h1>
+      <p>{% if view_all %}Every story across the newsroom{% else %}Here is what's happening with your stories{% endif %}</p>
+      <div class="dash-roles">{% for role in roles %}<span class="dash-role">{{ role }}</span>{% endfor %}</div>
+    </div>
+    <a class="dash-btn" href="{% url 'editorials:post_create' %}"><i class="bi bi-plus-lg"></i> New Post</a>
+  </div>
+
+  <div class="dash-stats">
+    <div class="dash-stat"><b>{{ stats.total }}</b><span>Total</span></div>
+    <div class="dash-stat dash-stat--published"><b>{{ stats.published }}</b><span>Published</span></div>
+    <div class="dash-stat dash-stat--draft"><b>{{ stats.draft }}</b><span>Drafts</span></div>
+    <div class="dash-stat dash-stat--pending"><b>{{ stats.pending }}</b><span>Pending</span></div>
+    <div class="dash-stat"><b>{{ stats.archived }}</b><span>Archived</span></div>
+    <div class="dash-stat dash-stat--views"><b>{{ stats.views }}</b><span>Views</span></div>
+  </div>
+
+  <section class="dash-card">
+    <div class="dash-card-head">
+      <h2 class="dash-card-title">{% if view_all %}All Posts{% else %}My Posts{% endif %}</h2>
+      {% if can_manage_all %}
+      <div class="dash-toggle">
+        {% if view_all %}<a href="{% url 'editorials:dashboard' %}">My</a><span class="dash-on">All</span>{% else %}<span class="dash-on">My</span><a href="{% url 'editorials:dashboard' %}?view=all">All</a>{% endif %}
+      </div>
+      {% endif %}
+    </div>
+
+    {% if posts %}
+    <div class="dash-table-wrap">
+      <table class="dash-table">
+        <thead>
+          <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Category</th>
+            <th scope="col">Status</th>
+            <th scope="col">Updated</th>
+            <th scope="col">Views</th>
+            <th scope="col"><span class="sr-only">Actions</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for post in posts %}
+          <tr>
+            <td>
+              <a class="dash-title" href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+              {% if post.featured %}<span class="dash-feat">FEATURED</span>{% endif %}
+            </td>
+            <td>{{ post.category.name }}</td>
+            <td><span class="dash-badge dash-badge--{{ post.status }}">{{ post.get_status_display }}</span></td>
+            <td>{{ post.updated_at|date:"M d, Y" }}</td>
+            <td>{{ post.views }}</td>
+            <td>
+              <div class="dash-acts">
+                <a href="{% url 'editorials:post_edit' post.slug %}" title="Edit" aria-label="Edit {{ post.title }}"><i class="bi bi-pencil"></i></a>
+                {% if can_publish and post.status != 'published' %}
+                <a href="{% url 'editorials:post_publish' post.slug %}" title="Publish" aria-label="Publish {{ post.title }}"><i class="bi bi-check2-circle"></i></a>
+                {% endif %}
+                {% if can_publish and post.status != 'archived' %}
+                <a href="{% url 'editorials:post_archive' post.slug %}" title="Archive" aria-label="Archive {{ post.title }}"><i class="bi bi-archive"></i></a>
+                {% endif %}
+                {% if can_delete_all or can_delete_own and post.author_id == user.id %}
+                <form method="post" action="{% url 'editorials:post_delete' post.slug %}" onsubmit="return confirm('Delete \u201c{{ post.title }}\u201d permanently?');">
+                  {% csrf_token %}
+                  <button type="submit" title="Delete" aria-label="Delete {{ post.title }}"><i class="bi bi-trash"></i></button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page_obj.has_other_pages %}
+    <nav class="dash-pager" aria-label="Pagination">
+      {% if page_obj.has_previous %}
+      <a href="{% if view_all %}?view=all&page={{ page_obj.previous_page_number }}{% else %}?page={{ page_obj.previous_page_number }}{% endif %}">Prev</a>
+      {% else %}<span class="dash-disabled">Prev</span>{% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if num == page_obj.number %}<span class="dash-current" aria-current="page">{{ num }}</span>
+        {% else %}<a href="{% if view_all %}?view=all&page={{ num }}{% else %}?page={{ num }}{% endif %}">{{ num }}</a>{% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <a href="{% if view_all %}?view=all&page={{ page_obj.next_page_number }}{% else %}?page={{ page_obj.next_page_number }}{% endif %}">Next</a>
+      {% else %}<span class="dash-disabled">Next</span>{% endif %}
+    </nav>
+    {% endif %}
+    {% else %}
+    <p class="dash-empty">No posts yet. <a href="{% url 'editorials:post_create' %}">Write your first story &rarr;</a></p>
+    {% endif %}
+  </section>
+{% include 'partials/dash_foot.html' %}

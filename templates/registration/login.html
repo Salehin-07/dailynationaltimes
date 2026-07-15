@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Login - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='dnt-form'>
+  <h2 style='margin-bottom:15px;'>Login</h2>
+  {% if form.errors %}<p class='queryMessage' style='color:#d00;'>Invalid username or password.</p>{% endif %}
+  <form method='post'>
+    {% csrf_token %}
+    {% for field in form %}
+    <div class='form-group'>
+      {{ field.label_tag }}
+      {{ field }}
+      {{ field.errors }}
+    </div>
+    {% endfor %}
+    <button type='submit' class='btn-submit'>Login</button>
+  </form>
+  <p style='margin-top:15px;'>No account? <a href='{% url "accounts:register" %}'>Register</a></p>
+</div>
+{% endblock %}

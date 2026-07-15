@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ site_settings.name }}{% endblock %}
+{% block og_description %}{{ site_settings.description|default:"" }}{% endblock %}
+
+{% block content %}
+{% include 'partials/ad_slot.html' with ads=ads_by_slot.home_top %}
+
+<section class='dnt-hero'>
+  {% with lead=featured|first %}
+  {% if lead %}
+  <article class='dnt-hero__lead'>
+    <a class='dnt-hero__media' href='{{ lead.get_absolute_url }}'>
+      <img src='{{ lead.featured_image }}' alt='{{ lead.title }}' loading='eager'/>
+    </a>
+    <div class='dnt-hero__lead-body'>
+      {% if lead.category %}<span class='dnt-hero__kicker'>{{ lead.category.name|upper }}</span>{% endif %}
+      <h2 class='dnt-hero__title'><a href='{{ lead.get_absolute_url }}'>{{ lead.title }}</a></h2>
+      {% if lead.excerpt %}<p class='dnt-hero__excerpt'>{{ lead.excerpt }}</p>{% endif %}
+      <div class='dnt-hero__meta'>By <b>{{ lead.author_name }}</b> · {{ lead.published_at|date:"F j, Y" }}</div>
+    </div>
+  </article>
+  {% endif %}
+  {% endwith %}
+
+  <div class='dnt-hero__list'>
+    {% for post in featured %}
+      {% if not forloop.first %}
+      <article class='dnt-hero__item'>
+        <a class='dnt-hero__item-media' href='{{ post.get_absolute_url }}'>
+          <img src='{{ post.featured_image }}' alt='{{ post.title }}' loading='lazy'/>
+        </a>
+        <div>
+          {% if post.category %}<span class='dnt-hero__kicker'>{{ post.category.name|upper }}</span>{% endif %}
+          <h3><a href='{{ post.get_absolute_url }}'>{{ post.title }}</a></h3>
+          <time datetime='{{ post.published_at|date:"c" }}'>{{ post.published_at|date:"F j, Y" }}</time>
+        </div>
+      </article>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% include 'partials/posts_grid.html' with title='MORE NEWS' page_obj=page_obj show_more_url='/search' %}
+{% endblock %}

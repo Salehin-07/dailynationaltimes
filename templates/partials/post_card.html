@@ -1,0 +1,26 @@
+{% load static %}
+<article class='hentry post-filter item{{ forloop.counter0 }}'>
+  <a class='post-filter-link image-nos' href='{{ post.get_absolute_url }}'>
+    <img alt='{{ post.title }}' class='snip-thumbnail lazy-img' src='{{ post.featured_image }}'/>
+  </a>
+  <div class='entery-category'>
+    {% if post.category %}<span class='post-tag'>{{ post.category.name|upper }}</span>{% endif %}
+    <h2 class='entry-title'><a href='{{ post.get_absolute_url }}' title='{{ post.title }}'>{{ post.title }}</a></h2>
+    <div class='share-now'>
+      <div class='post-snip'>
+        By <span class='post-author'>{{ post.author_name }}</span>
+        <div class='post-date published'><i class='bi bi-calendar2-minus'></i>{{ post.published_at|date:"F j, Y" }}</div>
+      </div>
+      <div class='home-share'>
+        <div class='hshare'>
+          {% with post_url=request.scheme|add:"://"|add:request.get_host|add:post.get_absolute_url %}
+          <div class='facebook'><a aria-label='Facebook' class='bi-facebook window-t' data-url='https://www.facebook.com/sharer.php?u={{ post_url }}' href='javascript:;' rel='nofollow' title='Facebook'></a></div>
+          <div class='twitter'><a aria-label='Twitter' class='bi-twitter-x window-t' data-url='https://x.com/intent/post?url={{ post_url }}' href='javascript:;' rel='nofollow' title='Twitter'></a></div>
+          <div class='whatsapp'><a aria-label='Whatsapp' class='bi-whatsapp window-t' data-url='https://api.whatsapp.com/send?text={{ post.title }} | {{ post_url }}' href='javascript:;' rel='nofollow' title='Whatsapp'></a></div>
+          <div class='telegram'><a aria-label='Telegram' class='bi-telegram window-t' data-url='https://telegram.me/share/url?url={{ post_url }}&text={{ post.title }}' href='javascript:;' rel='nofollow' title='Telegram'></a></div>
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+  </div>
+</article>

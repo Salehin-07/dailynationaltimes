@@ -1,0 +1,38 @@
+{% load static %}
+{% include 'partials/dash_head.html' with active='profile' title='Profile' %}
+  <section class="dash-card">
+    <div class="dash-card-head">
+      <h2 class="dash-card-title">My Account</h2>
+      <a href="{% url 'password_change' %}" class="dash-btn-ghost"><i class="bi bi-shield-lock"></i> Change Password</a>
+    </div>
+    <div style="padding:20px;">
+      <dl class="dash-profile-grid">
+        <div class="dash-info">
+          <div class="dash-ava-lg">{{ user.username|first|upper }}</div>
+          <dt>Username</dt>
+          <dd>{{ user.username }}</dd>
+        </div>
+        <div class="dash-info">
+          <dt>Email</dt>
+          <dd>{{ user.email|default:"—" }}</dd>
+        </div>
+        <div class="dash-info">
+          <dt>Roles</dt>
+          <dd>
+            {% for group in user.groups.all %}<span class="dash-role">{{ group.name }}</span> {% endfor %}
+            {% if not user.groups.exists %}Reader{% endif %}
+          </dd>
+        </div>
+        <div class="dash-info">
+          <dt>Member Since</dt>
+          <dd>{{ user.date_joined|date:"F j, Y" }}</dd>
+        </div>
+      </dl>
+      {% if can_manage_all or user.groups.count %}
+      <div class="dash-form-actions" style="margin-top:20px;">
+        <a href="{% url 'editorials:dashboard' %}" class="dash-btn"><i class="bi bi-grid-1x2"></i> Go to Dashboard</a>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+{% include 'partials/dash_foot.html' %}

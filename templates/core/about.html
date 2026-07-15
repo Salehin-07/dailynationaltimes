@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}About Us - {{ site_settings.name }}{% endblock %}
+{% block content %}
+<div class='page-content'>
+  <h2>About {{ site_settings.name }}</h2>
+  <p>{{ site_settings.footer_text|default:"The Daily National Times is a digital news platform delivering the latest updates from Bangladesh and around the world." }}</p>
+  <p>{{ site_settings.description }}</p>
+  <p>For news tips, advertising or correspondence, visit our <a href='{% url "core:contact" %}'>contact page</a>.</p>
+</div>
+{% endblock %}

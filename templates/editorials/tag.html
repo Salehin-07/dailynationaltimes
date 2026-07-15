@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Tag: {{ tag.name }} - {{ site_settings.name }}{% endblock %}
+{% block content %}
+{% include 'partials/posts_grid.html' with title=tag.name page_obj=page_obj empty_text='No posts with this tag yet.' %}
+{% endblock %}
